@@ -1,0 +1,10 @@
+[
+    {
+      "model": "user.UserProfile",
+      "pk": 1,
+      "fields": {
+        "type_user": "A",
+        "djuser_id": "1"
+      }
+    }
+]

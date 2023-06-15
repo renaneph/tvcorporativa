@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Error 403 {% endblock %}
+
+{% block content %}
+
+<div class="col-12">
+
+    <div class="col-md-4" style="float: left;">
+        <img src="{% static 'img/error.png' %}" style="width: 300px; height: 300px;" alt="Imagem Usuário"></img>
+    </div>
+    <div class="col-md-8" style="float: right; margin-top: 70px;">
+        <h1>Permissão Negada!</h1>
+        <p> Você não tem permissão para acessar esta página! Faça login como administrador. </p>
+        <a style="text-decoration: none;" href="{% url 'home' %}">
+            <i class="fas fa-reply"></i> Voltar para página principal
+        </a>
+    </div>
+
+</div>
+
+
+{% endblock %}

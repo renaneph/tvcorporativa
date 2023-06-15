@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %} Editar Usuário {{user.login}} {% endblock %}
+
+{% block title_content %} Editar Usuário {% endblock %}
+
+{% block content %}
+
+<a style="text-decoration: none; margin-left: 20px;" href="{% url 'table-users' %}">
+  <i class="fas fa-arrow-left fa-1x"></i>
+</a>
+
+    <form method="POST" style="display: flex; flex-flow: row wrap; align-items: center;">
+        {% csrf_token %}
+        <div class="form-group col-md-4">
+          <label for="login">Login</label>
+          <input type="text" class="form-control" id="login" value="{{ djuser.login }}" name="login" required>
+        </div>
+        <div class="form-group col-md-4" style="display: inline-flex; margin-top: 30px; padding-left: 60px;">
+          <div class="custom-control custom-radio">
+            <input class="custom-control-input" type="radio" id="ativo" name="customRadio" value="1" checked>
+            <label for="ativo" class="custom-control-label">Ativo</label>
+          </div>
+          <div class="custom-control custom-radio" style="padding-left: 50px;">
+            <input class="custom-control-input" type="radio" id="inativo" name="customRadio" value="0">
+            <label for="inativo" class="custom-control-label">Inativo</label>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="type-user">Tipo de usuário</label>
+            <select class="form-control" name="type-user">
+                <option value="{{ type_user_selected }}" selected>{{ name_typeuser }}</option>
+                {% for chave, valor in list_users %}
+                <option value="{{ chave }}">{{ valor }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" value="{{ djuser.email }}" name="email" required>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="password">Senha</label>
+            <input type="password" class="form-control" id="password" name="password">
+          </div>
+          <div class="form-group col-md-4">
+              <label for="password2">Confirme a Senha</label>
+              <input type="password" class="form-control" id="password2" name="password2">
+          </div>
+        <button class="btn btn-primary" type="submit" style="margin-left: 10px;">Salvar</button>
+    </form>
+
+{% endblock %}

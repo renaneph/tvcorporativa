@@ -1,0 +1,99 @@
+body { 
+    overflow-x: hidden; 
+}
+
+
+/* Paginação */
+
+.pagination {
+    margin-bottom: 20px;
+}
+
+.step-links{
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.step-links .current{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+/* Imagens GPR */
+
+.gpr-login{
+    width: 200px;
+    height: 100px;
+    float: relative;
+    margin: 0px 0px -100px 580px;
+}
+
+.gpr-logo{
+    width: 50px;
+    height: 50px;
+    margin: 0px 20px 0px 30px;
+}
+
+input[type='file'] {
+    display: none
+}
+
+/* Campo Conteúdo Visual Campanhas */
+
+.dependentes{
+    padding: 1rem;
+    border: 1px solid #ccc;
+  }
+
+.dependentes button{
+    border: none;
+    background-color: #5eb2e6;
+    color: white;
+    border-radius: 3px;
+    text-transform: uppercase;
+    padding: .20rem 1rem;
+}
+.dependentes button.green{
+    background-color: #005c54;
+    margin-top: 2rem;
+}
+  
+.dependentes .visual_content{
+    margin-top: 1rem;
+    display: grid;
+    grid-gap: .5rem;
+}
+  
+.dependentes .visual_content input{
+    padding: .5rem .75rem;
+    border: 1px solid #ccc;
+}
+
+.dependentes .visual_content input:focus{
+    border: 1px solid black;
+    outline: none;
+}
+  
+.dependentes .visual_content .vscontent{
+    display: grid;
+    grid-gap: .5rem;
+    grid-template-columns: 33% 33% 33%;
+}
+  
+.dependentes .visual_content .vscontent .action a{
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: .5rem .75rem;
+}
+  
+.dependentes .visual_content .vscontent .action a.save{
+    border-radius: 2px;
+    background-color: #efefef;
+    color: #005c54;
+}
+  
+.disabled{
+    pointer-events: none;
+    opacity: .5;
+    filter: grayscale(100%);
+}

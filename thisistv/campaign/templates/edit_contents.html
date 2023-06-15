@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Editar Conteúdo {{user.login}} {% endblock %}
+
+{% block title_content %} Editar Conteúdo Visual {% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<a style="text-decoration: none; margin-left: 20px;" href="{% url 'table-contents' %}">
+  <i class="fas fa-arrow-left fa-1x"></i>
+</a>
+
+    <form method="POST" enctype="multipart/form-data" style="display: flex; flex-flow: row wrap; align-items: center;">
+        {% csrf_token %}
+        <div class="form-group col-md-4">
+            <label for="name">Nome:</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ visual_content.name }}" required>
+        </div>
+          <div class="form-group col-md-4" style="margin-top: 20px; padding-left: 10px;">
+            <label for="type-content">Tipo de Conteúdo Visual:</label>
+            
+            <div class="custom-control custom-radio" style="padding-left: 50px;">
+              <input
+                class="custom-control-input" 
+                type="radio" 
+                id="image" 
+                name="type-content" 
+                value="IE" 
+                {% if visual_content.type_content == 'IE'%} checked {% endif %}
+              >
+              <label for="image" class="custom-control-label"><i class="fas fa-image"></i></label>
+            </div>
+            <div class="custom-control custom-radio" style="padding-left: 50px;">
+              <input 
+                class="custom-control-input" 
+                type="radio" 
+                id="video" 
+                name="type-content" 
+                value="ID"
+                {% if visual_content.type_content == 'ID'%} checked {% endif %}>
+              <label for="video" class="custom-control-label"><i class="fas fa-video"></i></label>
+            </div>
+          </div>
+          <div class="form-group col-md-4">
+            {% if visual_content.type_content == 'IE'%}
+            <label for="content" class="btn btn-primary"><i class="fas fa-upload"></i> Selecionar um arquivo</label>
+            <input type="file" id="content" name="content" accept="image/*">
+            <div class="nameFile"></div>
+            {% else %}
+            <label for="content" class="btn btn-primary"><i class="fas fa-upload"></i> Selecionar um arquivo</label>
+            <input type="file" id="content" name="content" accept="video/*">
+            <div class="nameFile"></div>
+            {% endif %}
+          </div>
+          <div class="form-group col-md-4" style="display: inline-flex; margin-top: 20px; padding-left: 10px;">
+            <label for="status">Status:</label>
+            <div class="custom-control custom-radio" style="padding-left: 50px;">
+              <input class="custom-control-input" type="radio" id="ativo" name="customRadio" value="1" checked>
+              <label for="ativo" class="custom-control-label">Ativo</label>
+            </div>
+            <div class="custom-control custom-radio" style="padding-left: 50px;">
+              <input class="custom-control-input" type="radio" id="inativo" name="customRadio" value="0">
+              <label for="inativo" class="custom-control-label">Inativo</label>
+            </div>
+          </div>
+        <button class="btn btn-primary" type="submit" style="margin-left: 10px;">Salvar</button>
+    </form>
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+$(function () {
+  const FileContent = document.getElementById('content')
+  const image = document.getElementById('image')
+  const video = document.getElementById('video')
+
+
+  $('#image').change(function() {
+    FileContent.accept = "image/*"
+  });
+
+  $('#video').change(function() {
+    FileContent.accept = "video/*"
+  });
+});
+
+$(function () {
+  $('#content').change(function() {
+       $('.nameFile').html('<b>Arquivo Selecionado:</b>' + $(this).val());
+  });
+});
+
+</script>
+
+{% endblock %}

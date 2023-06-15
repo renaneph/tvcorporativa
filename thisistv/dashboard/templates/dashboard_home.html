@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %} Dashboard Equipamento {% endblock %}
+
+{% block title_content %} Dashboard Completo {% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <!-- small card -->
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>{{ campaign }}</h3>
+                    <p>Campanhas</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-tv"></i>
+                </div>
+                <a href="/campaign/list-campaigns/" class="small-box-footer">
+                    Saiba Mais <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <!-- ./col -->
+    <div class="col-lg-3 col-6">
+    <!-- small card -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ campaign_approved }}</h3>
+                <p>Campanhas Aprovadas</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <a href="/campaign/list-campaigns/" class="small-box-footer">
+                Saiba Mais <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small card -->
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>{{ campaign_disapproved }}</h3>
+                    <p>Campanhas Reprovadas</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <a href="/campaign/list-campaigns/" class="small-box-footer">
+                    Saiba Mais <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+    <!-- small card -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{ visualcontents }}</h3>
+                <p>Conteúdos Visuais</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-image"></i>
+            </div>
+            <a href="/campaign/visual-content/list-contents/" class="small-box-footer">
+                Saiba Mais <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+    <!-- small card -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ users }}</h3>
+                <p>Usuários Registrados</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <a href="/user/list-users/" class="small-box-footer">
+                Saiba Mais <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+    <!-- small card -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{ campaign_approval }}</h3>
+                <p>Campanhas para Aprovação</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-tasks"></i>
+            </div>
+            <a href="/campaign/approval-campaigns/" class="small-box-footer">
+                Saiba Mais <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+<!-- /.row -->
+
+{% endblock %}
+
+

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Lista de Conteúdo Visual {% endblock %}
+
+{% block title_content %} Lista de Conteúdo Visual {% endblock %}
+
+{% block content %}
+<a style="text-decoration: none;" href="{% url 'register-content' %}">
+    <button type="button" class="btn btn-primary">Incluir</button>
+</a>
+<br/> <br/>
+<div class="card">
+    <div class="card-body">
+      <table id="datatable" class="display compact" style="width:100%">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Nome</th>
+          <th>Conteúdo</th>
+          <th>Ativo</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for content in contents %}
+                <tr>
+                    <td>{{ content.id }}</td>
+                    <td>{{ content.name }}</td>
+                    {% if content.type_content == 'IE' %}
+                    <td>
+                      <a href="{{ content.content.url }}"> <i class="fas fa-image"></i> </a>
+                    </td>
+                    {% else %}
+                    <td>
+                      <a href="{{ content.content.url }}"> <i class="fas fa-video"></i> </a>
+                    </td>
+                    {% endif %}
+                    {% if content.status == '1' %}
+                      <td> <i class="fas fa-check" style="color: green;"></i> </td>
+                    {% else %}
+                      <td> <i class="fas fa-times" style="color: red;"></i> </td>
+                    {% endif %}
+                    <td>
+                        <a href="{% url 'edit-content' content.id %}" class="edit-btn">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="#" data-content="{{ content.name }}" data-url="{% url 'delete-content' id=content.id %}" class="deletecontent">
+                          <i class="fas fa-trash" style="color: red;"></i>
+                      </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+
+  <div class="modal fade" id="deletecontent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">Deletar Conteúdo Visual <span id="name_content"></span>?</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          Tem certeza que deseja deletar este conteúdo visual ?
+        </div>
+        <div class="modal-footer" id="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          <form method="POST">
+          {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block script %}
+
+{% include 'datatables.html' %}
+
+<!-- Page specific script -->
+
+<script>
+  
+  $(document).ready(function() {
+      $('a.deletecontent').on( "click", function() {
+        event.preventDefault();
+        $('#deletecontent form').attr('action', $(this).data("url"));
+        $('#deletecontent #name_content').text($(this).data("content"));
+        $('#deletecontent').modal('show');
+      });
+    });
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Lista de Campanhas {% endblock %}
+
+{% block title_content %} Lista de Campanhas {% endblock %}
+
+{% block content %}
+<a style="text-decoration: none;" href="{% url 'register-campaign' %}">
+    <button type="button" class="btn btn-primary">Incluir</button>
+</a>
+<br/> <br/>
+<div class="card">
+    <div class="card-body">
+      <table id="datatable" class="display compact" style="width:100%">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Nome</th>
+          <th>Regularidade</th>
+          <th>Prioridade</th>
+          <th>Data e Hora Inicial</th>
+          <th>Data e Hora Final</th>
+          <th>Conteúdo Visual</th>
+          <th>Ativo</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns %}
+              {% if campaign.approval != 1 %}
+                <tr>
+                    <td>{{ campaign.id }}</td>
+                    <td>{{ campaign.name }}</td>
+                    {% if campaign.regularity == 'D' %}
+                        <td> Diária</td>
+                    {% elif campaign.regularity == 'S' %}
+                        <td> Semanal </td>
+                    {% else %}
+                        <td> Mensal </td>
+                    {% endif %}
+                    <td>{{ campaign.priority }}</td>
+                    <td>{{ campaign.initial_datetime|date:'d/m/y H:i' }}</td>
+                    <td>{{ campaign.final_datetime|date:'d/m/y H:i' }}</td>
+                    <td>
+                      <button type="button" class="btn btn-lg" data-toggle="modal" data-target="#myModal" onclick="Details({{ campaign.id }})">
+                        <i class="fas fa-eye" style="color: #007bff;"></i>
+                      </button>
+                    </td>
+                    {% if campaign.status == '1' %}
+                      <td> <i class="fas fa-check" style="color: green;"></i> </td>
+                    {% else %}
+                      <td> <i class="fas fa-times" style="color: red;"></i> </td>
+                    {% endif %}
+                    {% if campaign.approval == 2 %}
+                      <td> <i class="fas fa-thumbs-up" style="color: green;"></i> </td>
+                    {% else %}
+                      <td> <i class="fas fa-thumbs-down" style="color: red;"></i> </td>
+                    {% endif %}
+                    <td>
+                        <a href="{% url 'edit-campaign' campaign.id %}" class="edit-btn">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="#" data-campaign="{{ campaign.name }}" data-url="{% url 'delete-campaign' id=campaign.id %}" class="deletecampaign">
+                            <i class="fas fa-trash" style="color: red;"></i>
+                        </a>
+                    </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">Elementos da Campanha</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <table id="example1" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Nome Conteúdo</th>
+                <th>Tipo de Conteúdo</th>
+                <th>Conteúdo Visual</th>
+              </tr>
+            </thead>
+            <tbody id="table-body-box">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="deletecampaign" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">Deletar Campanha <span id="name_campaign"></span>?</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          Tem certeza que deseja deletar esta campanha ?
+        </div>
+        <div class="modal-footer" id="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          <form method="POST">
+          {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block script %}
+
+{% include 'datatables.html' %}
+
+<!-- Page specific script -->
+<script>
+  
+    function Details(id){
+
+      const tableBody = document.getElementById('table-body-box')
+
+      $.ajax({
+        type: 'GET',
+        url: '/campaign/list-content-campaign/' + id,
+        dataType: "json",
+        success: function(response){
+            const data = JSON.parse(response.data)
+            data.forEach(el => {
+              if (el.type_content == 'IE'){
+                tableBody.innerHTML += `
+              <tr>
+                <td>${el.name}</td>
+                <td><i class="fas fa-image fa-2x" style="color: #007bff;"></i></td>
+                <td><a href=/media/${el.content}><i class="fas fa-file fa-2x"></i> </a> </td>
+              </tr>
+              `
+              } else {
+                tableBody.innerHTML += `
+              <tr>
+                <td>${el.name}</td>
+                <td><i class="fas fa-video fa-2x" style="color: #007bff;"></i> </td>
+                <td><a href=/media/${el.content}><i class="fas fa-file fa-2x"></i> </a> </td>
+              </tr>
+              `
+              }
+            });
+        },
+        error: function(error){
+          console.log(error)
+        }
+      })
+
+    }
+
+    $(document).ready(function() {
+      $('a.deletecampaign').on( "click", function() {
+        event.preventDefault();
+        $('#deletecampaign form').attr('action', $(this).data("url"));
+        $('#deletecampaign #name_campaign').text($(this).data("campaign"));
+        $('#deletecampaign').modal('show');
+      });
+    });
+
+</script>
+
+{% endblock %}

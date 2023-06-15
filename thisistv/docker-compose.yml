@@ -1,0 +1,45 @@
+version: '2.11'
+services:
+  db:
+    image: mysql:8.0.21
+    container_name: thisistv_mysql
+    ports:
+    - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+       MYSQL_ROOT_PASSWORD: gpr#2023
+       MYSQL_DATABASE: thisistv
+    networks:
+      - thisistv_gpr
+    healthcheck:
+      test: ["CMD", "mysqladmin", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 5
+
+  web:
+    depends_on:
+      db:
+        condition: service_healthy
+    build: .
+    image: thisistv:1.0
+    container_name: thisistv
+    environment:
+        DJANGO_SUPERUSER_USERNAME: admin
+        DJANGO_SUPERUSER_PASSWORD: admin123
+    links: 
+    -  db
+    ports:
+    -  "8000:8000"
+    volumes:
+    - .:/var/www/thisistv
+    networks:
+      - thisistv_gpr
+    command: /bin/bash -c "
+      cd /var/www/thisistv
+      && python3 setup.py
+      && tail -F anything "
+
+networks:
+  thisistv_gpr:
+
+

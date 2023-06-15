@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Lista de usuários {% endblock %}
+
+{% block title_content %} Lista de usuários {% endblock %}
+
+{% block content %}
+<a style="text-decoration: none;" href="{% url 'register-user' %}">
+    <button type="button" class="btn btn-primary">Incluir</button>
+</a>
+<br/> <br/>
+<div class="card">
+    <div class="card-body">
+      <table id="datatable" class="display compact" style="width:100%">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Login</th>
+          <th>Ativo</th>
+          <th>Tipo de Usuário</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for user in user_list %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    {% if user.is_active == 1 %}
+                      <td> <i class="fas fa-check" style="color: green;"></i> </td>
+                    {% else %}
+                      <td> <i class="fas fa-times" style="color: red;"></i> </td>
+                    {% endif %}
+                    {% for type in user_type %}
+                      {% if user.id == type.djuser_id %}
+                        {% if type.type_user == 'O' %}
+                          <td> Operador </td>
+                        {% elif type.type_user == 'G' %}
+                          <td> Gerente </td>
+                        {% else %}
+                          <td> Administrador </td>
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                    <td>
+                        <a href="{% url 'edit-user' user.id %}" class="edit-btn">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="#" data-username="{{ user.username }}" data-url="{% url 'delete' id=user.id %}" class="deleteuser">
+                          <i class="fas fa-trash" style="color: red;"></i>
+                      </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+
+  <div class="modal fade" id="deleteuser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">Deletar Usuário <span id="username"></span>?</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          Tem certeza que deseja deletar este usuário ?
+        </div>
+        <div class="modal-footer" id="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          <form method="POST">
+          {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block script %}
+
+{% include 'datatables.html' %}
+
+<script>
+
+  $(document).ready(function() {
+      $('a.deleteuser').on( "click", function() {
+        event.preventDefault();
+        $('#deleteuser form').attr('action', $(this).data("url"));
+        $('#deleteuser #username').text($(this).data("username"));
+        $('#deleteuser').modal('show');
+      });
+    });
+
+</script>
+{% endblock %}

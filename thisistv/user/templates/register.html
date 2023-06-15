@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %} Cadastro de usuários {% endblock %}
+
+{% block title_content %} Cadastro de usuários {% endblock %}
+
+{% block content %}
+
+    <a style="text-decoration: none; margin-left: 20px;" href="{% url 'table-users' %}">
+      <i class="fas fa-arrow-left fa-1x"></i>
+    </a>
+
+    <form action="{% url 'register-user' %}" method="POST" style="display: flex; flex-flow: row wrap; align-items: center;">
+      {% csrf_token %}
+        <div class="form-group col-md-4">
+            <label for="login">Login</label>
+            <input type="text" class="form-control" id="login" placeholder="Insira o login" name="login" value="{{ form.username }}" required>
+        </div>
+        <div class="form-group col-md-4" style="display: inline-flex; margin-top: 30px; padding-left: 100px;">
+          <div class="custom-control custom-radio">
+            <input class="custom-control-input" type="radio" id="ativo" name="customRadio" value="1" checked>
+            <label for="ativo" class="custom-control-label">Ativo</label>
+          </div>
+          <div class="custom-control custom-radio" style="padding-left: 50px;">
+            <input class="custom-control-input" type="radio" id="inativo" name="customRadio" value="0">
+            <label for="inativo" class="custom-control-label">Inativo</label>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="type-user">Tipo de usuário</label>
+            <select class="form-control" name="type-user">
+              <option value="O">Operador</option>
+              <option value="G">Gerente</option>
+              <option value="A">Administrador</option>
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" placeholder="Insira o email" name="email" value="{{ form.email }}" required>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="password">Senha</label>
+          <input type="password" class="form-control" id="password" placeholder="Insira a senha" name="password" value="{{ form.password }}"  required>
+        </div>
+        <div class="form-group col-md-4" style="float: right;">
+            <label for="password2">Confirme a Senha</label>
+            <input type="password" class="form-control" id="password2" placeholder="Redigite a senha" name="password2" value="{{ form.password2 }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Salvar</button>
+    </form>
+
+{% endblock %}

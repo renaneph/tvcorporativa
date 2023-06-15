@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Cadastro de Campanha {% endblock %}
+
+{% block title_content %} Cadastro de Campanha {% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <a style="text-decoration: none; margin-left: 20px;" href="{% url 'table-campaigns' %}">
+      <i class="fas fa-arrow-left fa-1x"></i>
+    </a>
+
+    <form action="{% url 'register-campaign' %}" method="POST" enctype="multipart/form-data" style="display: inline-flex; flex-flow: row wrap; align-items: center;">
+      {% csrf_token %}
+        <div class="form-group col-md-4">
+          <label for="name">Nome:</label>
+          <input type="text" class="form-control" id="name" name="name" value="{{ form.name }}" required>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="type_regularity">Regularidade:</label>
+            <select class="form-control col-md-8" name="type_regularity">
+              <option value="D">Diária</option>
+              <option value="S">Semanal</option>
+              <option value="M">Mensal</option>
+            </select>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="priority">Prioridade (0 á 10):</label>
+          <input type="number" class="form-control" id="priority" name="priority" min="0" max="10" value="{{ form.priority }}" required>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="initial_datetime">Data e Hora Inicial:</label>
+          <input type="datetime-local" id="initial_datetime" name="initial_datetime" class="form-control col-md-6" value="{{ form.initial_datetime }}" required>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="final_datetime">Data e Hora Final:</label>
+            <input type="datetime-local" id="final_datetime" name="final_datetime" class="form-control col-md-6" value="{{ form.final_datetime }}" required>
+        </div>
+        <div class="dependentes form-group col-md-12">
+            <label>Conteúdo Visual (Ordene de cima para baixo)</label>
+            <div class="visual_content form-group col-md-12" id="visualcontents" style="display: inline-flex;">
+              <select class="content form-control col-md-3" id="vscontent" required > 
+                {% for content in contents %} 
+                  {% if content.status == '1' %} 
+                    <option value='{{ content.id }}'>{{ content.name }}</option> 
+                  {% endif %}
+                {% endfor %} 
+              </select>
+              <input class="duration form-control col-md-2" placeholder="Duração em segundos" id="duration" type="number"/>
+              <div class="action col-md-3" style="margin-top: 7px;">
+                <a href="#" class="addcontent" id="btnAddvisualcontent"><i class="fas fa-plus"></i></a>
+              </div>
+            </div>
+            <div class="col-md-12" id="list_visualcontents"></div>
+        </div>
+        <div class="form-group col-md-4" style="display: inline-flex; margin-top: 20px; padding-left: 10px;">
+          <label for="status">Status:</label>
+          <div class="custom-control custom-radio" style="padding-left: 50px;">
+            <input class="custom-control-input" type="radio" id="ativo" name="customRadio" value="1" checked>
+            <label for="ativo" class="custom-control-label">Ativo</label>
+          </div>
+          <div class="custom-control custom-radio" style="padding-left: 50px;">
+            <input class="custom-control-input" type="radio" id="inativo" name="customRadio" value="0">
+            <label for="inativo" class="custom-control-label">Inativo</label>
+          </div>
+        </div> <br/>
+        <div class="form-group col-md-12">
+          <button type="submit" class="btn btn-primary" style="margin-left: 10px;" id="savevisualcontents">Salvar</button>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+
+$(function () {
+    var divContent = document.querySelector("#list_visualcontents");
+    var botaoAdicionar = document.querySelector("#btnAddvisualcontent");
+    var contents = [{ }];
+    var first = contents.shift();
+    var id = 0;
+
+    //Ao clicar em adicionar ele cria uma linha com novos campos
+    $(botaoAdicionar).click(function () {
+        var vs_content = document.querySelector("#vscontent").value;
+        var duration = document.querySelector("#duration").value;
+        if (document.getElementById("duration").value.length > 0){
+          id++;
+          contents.push({id: id, content: vs_content, duration: duration});
+          document.getElementById('duration').value='';
+          loadContents();
+        } else {
+          alert('Por favor, preencha o campo duração para salvar!');
+        }
+    });
+
+    //Cliquando em remover a linha é eliminada
+    $(divContent).on('click', '.delete', function () {
+        $(this).parents('.vscontent').remove();
+        i--;
+    });
+
+    function loadContents(){
+      let contents_container = document.querySelector("#list_visualcontents");
+          contents_container.innerHTML = "";
+      console.log(contents);
+      contents.forEach((el)=>{
+        let id = el.id;
+        let content = el.content;
+        let duration = el.duration;
+        let content_container = `<div class="vscontent form-group col-md-12" data-id="${id}" style="display: inline-flex;">
+                                    <span style="margin-top: 7px;">${id} - </span> 
+                                    <select class=' content form-control col-md-3' id='${id}-visual_content' name='visual_content' style="margin-left: 5px; margin-right: 10px;" required > 
+                                      {% for content in contents %} 
+                                        {% if content.status == '1' %} 
+                                            <option value='{{ content.id }}'>{{ content.name }}</option> 
+                                        {% endif %}
+                                      {% endfor %} 
+                                    </select>
+                                    <input class="duration form-control col-md-3" placeholder="Duração em segundos" name='duration-visualcontent' type="number" value="${duration}"/>
+                                    <div class="action col-md-3" style="margin-top: 7px;">
+                                      <a href="#" class="delete">❌</a>
+                                    </div>
+                                  </div>`;
+        contents_container.innerHTML += content_container;
+        //document.getElementById(id+'-visual_content').value = content;
+        var text1 = content;
+        $("#"+id+"-visual_content option").filter(function() {
+            return this.value == text1; 
+        }).attr('selected', true);
+      });
+    }
+});
+
+</script>
+
+
+{% endblock %}
